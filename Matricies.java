@@ -4,10 +4,17 @@
 public class Matricies {
     int[][] array1;
     int[][] array2;
+    int rows1;
+    int cols1;
+    int rows2;
+    int cols2;
 
     public Matricies(int[][] array1In, int[][] array2In){
         array1 = array1In;
         array2 = array2In;
+    }
+
+    public Matricies(){
 
     }
 
