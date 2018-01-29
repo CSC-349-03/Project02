@@ -13,6 +13,8 @@ public class MatrixProduct {
         if(!checkValidity(matrices)){
             throw new IllegalArgumentException("Matrices must be squares, identical sizes, and have rows and columns that are a power of 2");
         }
+        int[][] result = calculateMatrixProduct_DAC(matrices, 0, 0, 0, 0, matrices.array1.length);
+        return result;
     }
 
     private static int[][] calculateMatrixProduct_DAC(Matricies matricies, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess){
@@ -21,6 +23,27 @@ public class MatrixProduct {
             result[0][0] = matricies.array1[rows1Start][cols1Start] * matricies.array2[rows2Start][cols2Start];
             return result;
         }
+
+        // TODO
+        return result;
+    }
+
+    private static int[][] combineMatricies(int[][] matrix1, int[][] matrix2, int[][] matrix3, int[][] matrix4){ // Verified working
+        int rows = matrix1.length + matrix3.length;
+        int cols = matrix1[0].length + matrix2[0].length;
+        int[][] result = new int[rows][cols];
+
+        // Copy matrix1 into result matrix
+        for(int i = 0; i < matrix1.length; i++){
+            System.arraycopy(matrix1[i], 0, result[i], 0, matrix1.length);
+            System.arraycopy(matrix3[i], 0, result[i + matrix1.length], 0, matrix3.length);
+            System.arraycopy(matrix2[i], 0, result[i], matrix2.length, matrix2.length);
+            System.arraycopy(matrix4[i], 0, result[i + matrix1.length], matrix4.length, matrix4.length);
+        }
+        return result;
+    }
+
+    private static int[][] matrixAdd(int[][] matrix1, int[][] matrix2){
         // TODO
         return result;
     }
@@ -30,6 +53,7 @@ public class MatrixProduct {
         if (!checkValidity(matrices)) {
             throw new IllegalArgumentException("Matrices must be squares, identical sizes, and have rows and columns that are a power of 2");
         }
+        return result;
     }
 
     private static boolean checkValidity(Matricies matricies){
