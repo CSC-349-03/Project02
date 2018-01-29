@@ -5,6 +5,8 @@
  **  1-26-2018
  */
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
+
 import java.lang.Math;
 
 public class MatrixProduct {
@@ -43,8 +45,16 @@ public class MatrixProduct {
         return result;
     }
 
-    private static int[][] matrixAdd(int[][] matrix1, int[][] matrix2){
-        // TODO
+    public static int[][] addMatrices(int[][] matrix1, int[][] matrix2) throws InvalidArgumentException {
+        if(matrix1.length != matrix2.length || matrix1[0].length != matrix2[0].length){
+            throw new InvalidArgumentException(new String[]{"Matrices of different dimensions cannot be directly added"});
+        }
+        int[][] result = new int[matrix1.length][matrix1[0].length];
+        for (int i = 0; i < matrix1.length; i++){
+            for (int j = 0; j < matrix1[0].length; j++){
+                result[i][j] = matrix1[i][j] + matrix2[i][j];
+            }
+        }
         return result;
     }
 
@@ -53,7 +63,7 @@ public class MatrixProduct {
         if (!checkValidity(matrices)) {
             throw new IllegalArgumentException("Matrices must be squares, identical sizes, and have rows and columns that are a power of 2");
         }
-        return result;
+        return null;
     }
 
     private static boolean checkValidity(Matricies matricies){
