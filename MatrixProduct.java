@@ -5,8 +5,6 @@
  **  1-26-2018
  */
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-
 import java.lang.Math;
 
 public class MatrixProduct {
@@ -19,15 +17,26 @@ public class MatrixProduct {
         return result;
     }
 
-    private static int[][] calculateMatrixProduct_DAC(Matricies matricies, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess){
-        int[][] result = new int[sizeToProcess][sizeToProcess];
+    private static int[][] calculateMatrixProduct_DAC(Matricies matricies, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess) throws IllegalArgumentException{
+        //int[][] result = new int[sizeToProcess][sizeToProcess];
         if(sizeToProcess == 1){
+            int[][] result = new int[1][1];
             result[0][0] = matricies.array1[rows1Start][cols1Start] * matricies.array2[rows2Start][cols2Start];
             return result;
         }
-
-        // TODO
-        return result;
+        int[][] a11b11 = calculateMatrixProduct_DAC(matricies, rows1Start, cols1Start, rows2Start, cols2Start, sizeToProcess/2);
+        int[][] a12b21 = calculateMatrixProduct_DAC(matricies, rows1Start, cols1Start + sizeToProcess / 2, rows2Start + sizeToProcess / 2, cols2Start, sizeToProcess / 2);
+        int[][] result11 = addMatrices(a11b11, a12b21);
+        int[][] a11b12 = calculateMatrixProduct_DAC(matricies, rows1Start, cols1Start, rows2Start, cols2Start + sizeToProcess / 2, sizeToProcess/2);
+        int[][] a12b22 = calculateMatrixProduct_DAC(matricies, rows1Start, cols1Start + sizeToProcess / 2, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] result12 = addMatrices(a11b12, a12b22);
+        int[][] a21b11 = calculateMatrixProduct_DAC(matricies, rows1Start + sizeToProcess / 2, cols1Start, rows2Start, cols2Start, sizeToProcess/2);
+        int[][] a22b21 = calculateMatrixProduct_DAC(matricies, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, rows2Start + sizeToProcess / 2, cols2Start, sizeToProcess / 2);
+        int[][] result21 = addMatrices(a21b11, a22b21);
+        int[][] a21b12 = calculateMatrixProduct_DAC(matricies, rows1Start + sizeToProcess / 2, cols1Start, rows2Start, cols2Start + sizeToProcess / 2, sizeToProcess/2);
+        int[][] a22b22 = calculateMatrixProduct_DAC(matricies, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] result22 = addMatrices(a21b12, a22b22);
+        return combineMatricies(result11, result12, result21, result22);
     }
 
     private static int[][] combineMatricies(int[][] matrix1, int[][] matrix2, int[][] matrix3, int[][] matrix4){ // Verified working
@@ -45,9 +54,9 @@ public class MatrixProduct {
         return result;
     }
 
-    public static int[][] addMatrices(int[][] matrix1, int[][] matrix2) throws InvalidArgumentException {
+    private static int[][] addMatrices(int[][] matrix1, int[][] matrix2) throws IllegalArgumentException {
         if(matrix1.length != matrix2.length || matrix1[0].length != matrix2[0].length){
-            throw new InvalidArgumentException(new String[]{"Matrices of different dimensions cannot be directly added"});
+            throw new IllegalArgumentException("Matrices of different dimensions cannot be directly added");
         }
         int[][] result = new int[matrix1.length][matrix1[0].length];
         for (int i = 0; i < matrix1.length; i++){
