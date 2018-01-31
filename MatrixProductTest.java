@@ -15,6 +15,14 @@ public class MatrixProductTest {
         assertArrayEquals(knownGoodResult, result);
     }
 
+    @Test
+    public void addMatricesPartial() {
+        int[][] matrix1 = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+        int[][]result = MatrixProduct.addMatricesPartial(matrix1, matrix1, 2,2, 0, 0, 2);
+        int[][] expected = {{12, 14}, {20, 22}};
+        assertArrayEquals(result, expected);
+    }
+
     /*@org.junit.Test
     public void combineMatricies() {
         int[][] matrix1 = {{1, 2}, {3, 4}};
