@@ -1,6 +1,10 @@
-/**
- * Created by Andrew LeDawson on 1/24/2018.
+/*  David Twyman, Andrew LeDawson
+ **  dtwyman@calpoly.edu, aledawson@calpoly.edu
+ **  CSC 349-03
+ **  Project 2
+ **  2-2-2018
  */
+
 public class Matricies {
     int[][] array1;
     int[][] array2;

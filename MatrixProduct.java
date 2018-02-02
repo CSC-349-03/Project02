@@ -2,7 +2,7 @@
  **  dtwyman@calpoly.edu, aledawson@calpoly.edu
  **  CSC 349-03
  **  Project 2
- **  1-26-2018
+ **  2-2-2018
  */
 
 import java.lang.Math;
@@ -13,8 +13,7 @@ public class MatrixProduct {
         if(!checkValidity(matrices)){
             throw new IllegalArgumentException("Matrices must be squares, identical sizes, and have rows and columns that are a power of 2");
         }
-        int[][] result = calculateMatrixProduct_DAC(matrices, 0, 0, 0, 0, matrices.array1.length);
-        return result;
+        return calculateMatrixProduct_DAC(matrices, 0, 0, 0, 0, matrices.array1.length);
     }
 
     private static int[][] calculateMatrixProduct_DAC(Matricies matricies, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess) throws IllegalArgumentException{
@@ -44,29 +43,41 @@ public class MatrixProduct {
         if (!checkValidity(matrices)) {
             throw new IllegalArgumentException("Matrices must be squares, identical sizes, and have rows and columns that are a power of 2");
         }
-        return null;
+        return calculateMatrixProduct_Strassen(matrices.array1, matrices.array2, 0, 0, 0, 0, matrices.array1.length);
     }
 
-    private static int[][] calculateMatrixProduct_Strassen(Matricies matricies, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess) throws IllegalArgumentException{
+    private static int[][] calculateMatrixProduct_Strassen(int[][] array1, int[][] array2, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess) throws IllegalArgumentException{
         if(sizeToProcess == 1){
             int[][] result = new int[1][1];
-            result[0][0] = matricies.array1[rows1Start][cols1Start] * matricies.array2[rows2Start][cols2Start];
+            result[0][0] = array1[rows1Start][cols1Start] * array2[rows2Start][cols2Start];
             return result;
         }
         // Compute operation matrices
-        int[][] s1 = subtractdMatricesPartial(matricies.array2, matricies.array2, rows2Start, cols2Start + sizeToProcess / 2, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
-        int[][] s2 = addMatricesPartial(matricies.array1, matricies.array1, rows1Start, cols1Start, rows1Start, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
-        int[][] s3 = addMatricesPartial(matricies.array1, matricies.array1, rows1Start + sizeToProcess / 2, cols1Start, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
-        int[][] s4 = subtractdMatricesPartial(matricies.array2, matricies.array2, rows2Start + sizeToProcess / 2, cols2Start, rows2Start, cols2Start, sizeToProcess / 2);
-        int[][] s5 = addMatricesPartial(matricies.array1, matricies.array1, rows1Start, cols1Start, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
-        int[][] s6 = addMatricesPartial(matricies.array2, matricies.array2, rows2Start, cols2Start, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
-        int[][] s7 = subtractdMatricesPartial(matricies.array1, matricies.array1, rows1Start, cols1Start + sizeToProcess / 2, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
-        int[][] s8 = addMatricesPartial(matricies.array2, matricies.array2, rows2Start + sizeToProcess / 2, cols2Start, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
-        int[][] s9 = subtractdMatricesPartial(matricies.array1, matricies.array1, rows1Start, cols1Start, rows1Start + sizeToProcess / 2, cols1Start, sizeToProcess / 2);
-        int[][] s10 = addMatricesPartial(matricies.array2, matricies.array2, rows2Start, cols2Start, rows2Start, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s1 = subtractdMatricesPartial(array2, array2, rows2Start, cols2Start + sizeToProcess / 2, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s2 = addMatricesPartial(array1, array1, rows1Start, cols1Start, rows1Start, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s3 = addMatricesPartial(array1, array1, rows1Start + sizeToProcess / 2, cols1Start, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s4 = subtractdMatricesPartial(array2, array2, rows2Start + sizeToProcess / 2, cols2Start, rows2Start, cols2Start, sizeToProcess / 2);
+        int[][] s5 = addMatricesPartial(array1, array1, rows1Start, cols1Start, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s6 = addMatricesPartial(array2, array2, rows2Start, cols2Start, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s7 = subtractdMatricesPartial(array1, array1, rows1Start, cols1Start + sizeToProcess / 2, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s8 = addMatricesPartial(array2, array2, rows2Start + sizeToProcess / 2, cols2Start, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s9 = subtractdMatricesPartial(array1, array1, rows1Start, cols1Start, rows1Start + sizeToProcess / 2, cols1Start, sizeToProcess / 2);
+        int[][] s10 = addMatricesPartial(array2, array2, rows2Start, cols2Start, rows2Start, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
         // Compute incomplete matrices
-
+        int[][] p1 = calculateMatrixProduct_Strassen(array1, s1, rows1Start, cols1Start, 0, 0, sizeToProcess / 2);
+        int[][] p2 = calculateMatrixProduct_Strassen(s2, array2, 0, 0, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] p3 = calculateMatrixProduct_Strassen(s3, array2, 0, 0, rows2Start, cols2Start, sizeToProcess / 2);
+        int[][] p4 = calculateMatrixProduct_Strassen(array1, s4, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, 0, 0, sizeToProcess / 2);
+        int[][] p5 = calculateMatrixProduct_Strassen(s5, s6, 0, 0, 0, 0, sizeToProcess / 2);
+        int[][] p6 = calculateMatrixProduct_Strassen(s7, s8, 0, 0, 0, 0, sizeToProcess / 2);
+        int[][] p7 = calculateMatrixProduct_Strassen(s9, s10, 0, 0, 0,0, sizeToProcess / 2);
         // Compute partial matrices
+        int[][] c11 = addMatrices(addMatrices(p5, p4), subtractMatrices(p6, p2));
+        int[][] c12 = addMatrices(p1, p2);
+        int[][] c21 = addMatrices(p3, p4);
+        int[][] c22 = addMatrices(subtractMatrices(p5, p3), subtractMatrices(p1, p7));
+        // Combine for result to return
+        return combineMatricies(c11, c12, c21, c22);
     }
 
     private static int[][] combineMatricies(int[][] matrix1, int[][] matrix2, int[][] matrix3, int[][] matrix4){ // Verified working
@@ -112,14 +123,14 @@ public class MatrixProduct {
         return result;
     }
 
-    private static int[][] subtractMatrices(int[][] matrix1, int[][] matrix2) throws IllegalArgumentException {
-        if(matrix1.length != matrix2.length || matrix1[0].length != matrix2[0].length){
+    private static int[][] subtractMatrices(int[][] minuend, int[][] subtrahend) throws IllegalArgumentException {
+        if(minuend.length != subtrahend.length || minuend[0].length != subtrahend[0].length){
             throw new IllegalArgumentException("Matrices of different dimensions cannot be directly subtracted");
         }
-        int[][] result = new int[matrix1.length][matrix1[0].length];
-        for (int i = 0; i < matrix1.length; i++){
-            for (int j = 0; j < matrix1[0].length; j++){
-                result[i][j] = matrix1[i][j] - matrix2[i][j];
+        int[][] result = new int[minuend.length][minuend[0].length];
+        for (int i = 0; i < minuend.length; i++){
+            for (int j = 0; j < minuend[0].length; j++){
+                result[i][j] = minuend[i][j] - subtrahend[i][j];
             }
         }
         return result;
