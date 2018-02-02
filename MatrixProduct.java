@@ -47,9 +47,27 @@ public class MatrixProduct {
         return null;
     }
 
-    //private static int[][] calculateMatrixProduct_Strassen(Matricies matricies, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess) throws IllegalArgumentException{
+    private static int[][] calculateMatrixProduct_Strassen(Matricies matricies, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess) throws IllegalArgumentException{
+        if(sizeToProcess == 1){
+            int[][] result = new int[1][1];
+            result[0][0] = matricies.array1[rows1Start][cols1Start] * matricies.array2[rows2Start][cols2Start];
+            return result;
+        }
+        // Compute operation matrices
+        int[][] s1 = subtractdMatricesPartial(matricies.array2, matricies.array2, rows2Start, cols2Start + sizeToProcess / 2, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s2 = addMatricesPartial(matricies.array1, matricies.array1, rows1Start, cols1Start, rows1Start, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s3 = addMatricesPartial(matricies.array1, matricies.array1, rows1Start + sizeToProcess / 2, cols1Start, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s4 = subtractdMatricesPartial(matricies.array2, matricies.array2, rows2Start + sizeToProcess / 2, cols2Start, rows2Start, cols2Start, sizeToProcess / 2);
+        int[][] s5 = addMatricesPartial(matricies.array1, matricies.array1, rows1Start, cols1Start, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s6 = addMatricesPartial(matricies.array2, matricies.array2, rows2Start, cols2Start, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s7 = subtractdMatricesPartial(matricies.array1, matricies.array1, rows1Start, cols1Start + sizeToProcess / 2, rows1Start + sizeToProcess / 2, cols1Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s8 = addMatricesPartial(matricies.array2, matricies.array2, rows2Start + sizeToProcess / 2, cols2Start, rows2Start + sizeToProcess / 2, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        int[][] s9 = subtractdMatricesPartial(matricies.array1, matricies.array1, rows1Start, cols1Start, rows1Start + sizeToProcess / 2, cols1Start, sizeToProcess / 2);
+        int[][] s10 = addMatricesPartial(matricies.array2, matricies.array2, rows2Start, cols2Start, rows2Start, cols2Start + sizeToProcess / 2, sizeToProcess / 2);
+        // Compute incomplete matrices
 
-    //}
+        // Compute partial matrices
+    }
 
     private static int[][] combineMatricies(int[][] matrix1, int[][] matrix2, int[][] matrix3, int[][] matrix4){ // Verified working
         int rows = matrix1.length + matrix3.length;
@@ -79,7 +97,7 @@ public class MatrixProduct {
         return result;
     }
 
-    public static int[][] addMatricesPartial(int[][] matrix1, int[][] matrix2, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess) throws IllegalArgumentException {
+    private static int[][] addMatricesPartial(int[][] matrix1, int[][] matrix2, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess) throws IllegalArgumentException {
         if(matrix1.length != matrix2.length || matrix1[0].length != matrix2[0].length){
             throw new IllegalArgumentException("Matrices of different dimensions cannot be directly added");
         }
@@ -102,6 +120,21 @@ public class MatrixProduct {
         for (int i = 0; i < matrix1.length; i++){
             for (int j = 0; j < matrix1[0].length; j++){
                 result[i][j] = matrix1[i][j] - matrix2[i][j];
+            }
+        }
+        return result;
+    }
+
+    private static int[][]subtractdMatricesPartial(int[][] matrix1, int[][] matrix2, int rows1Start, int cols1Start, int rows2Start, int cols2Start, int sizeToProcess) throws IllegalArgumentException {
+        if(matrix1.length != matrix2.length || matrix1[0].length != matrix2[0].length){
+            throw new IllegalArgumentException("Matrices of different dimensions cannot be directly added");
+        }
+        int[][] result = new int[sizeToProcess][sizeToProcess];
+        for (int i = rows1Start; i < rows1Start + sizeToProcess; i++){
+            for (int j = cols1Start; j < cols1Start + sizeToProcess; j++){
+                int matrix2i = i + rows2Start - rows1Start;
+                int matrix2j = j + cols2Start - cols1Start;
+                result[i - rows1Start][j - cols1Start] = matrix1[i][j] - matrix2[matrix2i][matrix2j];
             }
         }
         return result;
