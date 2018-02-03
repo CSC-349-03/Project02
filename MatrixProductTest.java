@@ -1,10 +1,13 @@
-import org.junit.Test;
+/*  David Twyman, Andrew LeDawson
+ **  dtwyman@calpoly.edu, aledawson@calpoly.edu
+ **  CSC 349-03
+ **  Project 2
+ **  2-2-2018
+ */
 
+import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * Created by Andrew LeDawson on 1/29/2018.
- */
 public class MatrixProductTest {
     @Test
     public void matrixProduct_DAC() {
@@ -12,6 +15,17 @@ public class MatrixProductTest {
             int[][] matrix2 = {{17, 18, 19, 20}, {21, 22, 23, 24}, {25, 26, 27, 28}, {29, 30, 31, 32}};
         int[][] result = MatrixProduct.matrixProduct_DAC(matrix1, matrix2);
         int[][] knownGoodResult = MatrixWork.matrixProduct(matrix1, matrix2);
+        assertArrayEquals(knownGoodResult, result);
+    }
+
+    @Test
+    public void matrixProduct_Strassen() {
+        int[][] matrix1 = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+        int[][] matrix2 = {{17, 18, 19, 20}, {21, 22, 23, 24}, {25, 26, 27, 28}, {29, 30, 31, 32}};
+        int[][] result = MatrixProduct.matrixProduct_Strassen(matrix1, matrix2);
+        int[][] knownGoodResult = MatrixWork.matrixProduct(matrix1, matrix2);
+        int[][] dacResult = MatrixProduct.matrixProduct_DAC(matrix1, matrix2);
+        assertArrayEquals(dacResult, result);
         assertArrayEquals(knownGoodResult, result);
     }
 
